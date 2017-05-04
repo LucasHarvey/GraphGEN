@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Grapher -By Lucas Harvey</title>
+<script src="jquery-1.7.1.min.js"></script>
+<script src="generic_figures.js"></script>
+<script src="least_squares.js"></script>
+<script src="functions.js"></script>
+<script src="gui.js"></script>
+<link rel="stylesheet" type="text/css" href="graph_style.css"></style>
+
+<!-- ================================================================ -->
+<!-- This is the javascript code -->
+<!-- ================================================================ -->
+<script>
+
+// ------------------------------------------------------------------------
+// Once the page has finished loading, call function 'init'
+// ------------------------------------------------------------------------
+
+$("document").ready(init);
+
+// ------------------------------------------------------------------------
+// Declare a bunch of variables for later use
+// ------------------------------------------------------------------------
+
+var WIDTH;                  // width of the canvas
+var HEIGHT;                 // height of the canvas
+var ctx;                    // canvas context
+var canvasMinX;             // the position leftmost edge of the canvas
+var canvasMaxX;             // the position rightmost edge of the canvas
+var n = 0                   //used for the position in pts array
+var m = 1                   //used for the position in pts array
+
+
+
+// get information about the canvas (the canvas is defined in the html part of this web-page)
+//prepare the page when the app is launched
+
+function init()
+{
+  ctx = $("#theCanvas")[0].getContext("2d");
+  WIDTH = $("#theCanvas").width();
+  HEIGHT = $("#theCanvas").height();
+	draw_axis();
+	draw_ticks();
+}
+
+//the data_entry_adjusted function is used to add points to the canvas based on the chosen increments
+var pts = [];
+
+function data_entry_adjusted() {
+  var x_increments = parseFloat(document.getElementById('x_inc').value)
+  var y_increments = parseFloat(document.getElementById('y_inc').value)
+	var x = parseFloat(document.getElementById('x').value);
+	var y = parseFloat(document.getElementById('y').value);
+	var drawingx = (20/x_increments)*x + WIDTH/2
+	var drawingy = parseFloat(HEIGHT/2) - ((20/y_increments)*y)
+	Circle(drawingx, drawingy, 3);
+	pts.push([x,y])
+}
+
+//the data_entry function calls the data_entry_adjusted function and decides if it must clear the canvas
+//before doing so (if the increments have been changed)
+function data_entry(){
+  var x_increments = parseFloat(document.getElementById('x_inc').value)
+  var y_increments = parseFloat(document.getElementById('y_inc').value)
+
+  if (loopcounter !=0){
+
+    if((x_increments != last_x_inc) || (y_increments != last_y_inc)){
+
+      clear();
+      draw_axis();
+      draw_ticks();
+      //if the increments are changed, empty the point array and set the counters back to their original value
+      //this is important for the trend line function which must be reinitialized if the increments are changed
+      pts = [];
+      n = 0
+      m = 1
+      }
+
+  data_entry_adjusted()
+  last_x_inc = x_increments
+  last_y_inc = y_increments
+  }
+
+  if (loopcounter == 0){
+
+  data_entry_adjusted()
+  last_x_inc = x_increments
+  last_y_inc = y_increments
+  loopcounter+=1
+  }
+
+}
+
+//the calculate_adjusted_slope function is used to calculate the slope between two points and
+//draw the line between them
+function calculate_adjusted_slope(){
+  var x_increments = parseFloat(document.getElementById('x_inc').value)
+  var y_increments = parseFloat(document.getElementById('y_inc').value)
+	x1=pts[n][0]
+	y1=pts[n][1]
+	x2=pts[m][0]
+	y2=pts[m][1]
+	deltay = y2 - y1
+	deltax = x2 - x1
+	slope = deltay/deltax
+	b = (y1-(slope * x1))
+
+  y_at_width = parseFloat(HEIGHT/2) - ((slope*x_increments * 25 + b) * (20/y_increments))
+  y_at_left = parseFloat(HEIGHT/2) - ((-1*slope*x_increments * 25 + b) * (20/y_increments))
+  Line (0,y_at_left,WIDTH,y_at_width)
+
+  //different ways of alerting the slope (cleaner way of expressing the equation)
+  if (b<0){
+    alert("Equation: "+ "y = " + slope + "x " + " " + b);
+  }
+  else if (b==0){
+
+	   if (slope == 1){
+	      alert("Equation: y = x");
+      }
+
+	    else{
+		      alert("Equation: "+ "y = " + slope + "x ")
+      }
+  }
+  else {
+	   alert("Equation: "+ "y = " + slope + "x " + " + " + b);
+   }
+
+ n+=2
+ m+=2
+}
+
+//the calculate_slope function calls the calculate_adjusted_slope function and decides if it must
+//clear the canvas before doing so (if the increments were changed)
+function calculate_slope(){
+  var x_increments = parseFloat(document.getElementById('x_inc').value)
+  var y_increments = parseFloat(document.getElementById('y_inc').value)
+
+  if (loopcounter !=0){
+
+    if((x_increments != last_x_inc) || (y_increments != last_y_inc)){
+      clear();
+      draw_axis();
+      draw_ticks();
+      pts = [];
+      n = 0
+      m = 0
+    }
+
+  calculate_adjusted_slope()
+  last_x_inc = x_increments
+  last_y_inc = y_increments
+
+  }
+
+  if (loopcounter == 0){
+
+    calculate_adjusted_slope()
+    last_x_inc = x_increments
+    last_y_inc = y_increments
+    loopcounter+=1
+  }
+
+}
+
+</script>
+
+</head>
+
+<body>
+<!-- ================================================================ -->
+<!-- This is the html page-->
+<!-- ================================================================ -->
+<font face = " verdana" color = "#003399">x</font> <input id="x"  style="width: 20px; face: verdana; color: #003399">
+<font face = " verdana" color = "#003399">y</font> <input id="y"  style="width: 20px; face: verdana; color: #003399">
+<button onClick="data_entry()" class = "general"> Enter </button>
+<button onClick="calculate_slope()" class = "general">Display Equation</button>
+<font face = " verdana" color = "#003399">Increments in x: </font><input id = "x_inc" style="width: 20px; face: verdana; color: #003399" value = "20"></input>
+<font face = " verdana" color = "#003399">Increments in y: </font><input id = "y_inc" style="width: 20px; face: verdana; color: #003399" value = "20"></input>
+<br/><br/>
+
+<!-- This is the drop-down menu for the various function-->
+<div1 class="dropdown"><br/>
+  <button onclick="show_dropdown()" class="dropbtn">Functions</button>
+  <div2 id="myDropdown" class="dropdown-content">
+
+		<button class = "function" onClick = "show_linear_function()">Linear</button>
+    <button class = "function" onClick = "show_quadratic_function()">Quadratic</button>
+    <button class = "function" onClick = "show_trigonometric_function()">Trigonometric</button>
+  </div2>
+</div1>
+
+<button onClick = "draw_trend_line()" class = "general">Draw Trend Line</button>
+
+<button onClick = "reset()" class = "general">Clear</button>
+
+<br/>
+
+
+</br><br/>
+
+<!-- this is the section containing the divs for each function and its inputs -->
+
+<div id = "linear_fn" class = "lin_function_content">
+<font face = " verdana" color = "#003399">Linear y =  <input id = "slope" style="width: 20px; face: verdana; color: #003399" class = "slope_class"> x + <input id = "y-intercept" style="width: 20px; face: verdana; color: #003399" class = "yintercept_class"></font>
+<button onClick = "draw_linear()" class = "thin-general">Plot Graph</button>
+</div>
+
+<div id = "quadratic_fn" class = "quad_function_content">
+<font face = " verdana" color = "#003399">Quadratic: y = <input id="quad_a" style="width: 20px; face: verdana; color: #003399"> x^2 + <input id="quad_b" style="width: 20px; face: verdana; color: #003399"> x + <input id="quad_c" style="width: 20px; face: verdana; color: #003399"></font>
+<button onClick = "draw_quadratic()" class = "thin-general">Plot Graph</button></div>
+
+<div id = "trigonometric_fn" class = "trig_function_content">
+  <font face = " verdana" color = "#003399">Trigonometric: y = <input id="trig_a" style="width: 20px; face: verdana; color: #003399"></input>
+<!-- this is the dropdown menu for the various trigonometric functions -->
+  <div class="trig_dropdown">
+    <button onclick="show_trig_dropdown()" id = "three_dot_btn" class="trigbtn"><span class = "trigbtn" id = "three_dots">...</span></button>
+  <div id="my_trig_Dropdown" class="trig-dropdown-content">
+
+    		<button class = "trig_function" onClick = "show_sin()">sin</button>
+        <button class = "trig_function" onClick = "show_cos()">cos</button>
+        <button class = "trig_function" onClick = "show_tan()">tan</button>
+
+
+  </div>
+</div>
+
+<input id="trig_b" style="width: 20px; face: verdana; color: #003399"></input> x</font>
+<button onClick = "draw_trigonometric()" class = "thin-general">Plot Graph</button>
+</div></br></br></br></br></br>
+
+<!-- this is the canvas -->
+<canvas id="theCanvas" width="1000" height="500"></canvas>
+
+</body>
+</html>

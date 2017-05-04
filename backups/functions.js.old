@@ -1,0 +1,109 @@
+function draw_linear(){
+	eqslope = parseFloat(document.getElementById('slope').value);
+	eqintercept = parseFloat(document.getElementById('y-intercept').value);
+	left_intercept = parseFloat(HEIGHT/2) - (-1*eqslope*parseFloat(WIDTH/2) + eqintercept)
+	width_intercept = parseFloat(HEIGHT/2) - (eqslope * parseFloat(WIDTH/2) + eqintercept)
+	if (eqslope == 0){
+		Line(0,parseFloat(HEIGHT/2) - eqintercept,WIDTH,parseFloat(HEIGHT/2) - eqintercept)
+	}
+	else{
+	Line(0,left_intercept,WIDTH,width_intercept)
+}
+}
+	function draw_quadratic(){
+var min = parseFloat(-1)*WIDTH; // Minimum x
+var max = WIDTH; // Maximum x
+var xstep = 0.1; // How smooth the curve should be
+var quad_a = document.getElementById('quad_a').value
+var quad_b = document.getElementById('quad_b').value
+var quad_c = parseFloat(document.getElementById('quad_c').value)
+
+// ctx is the context object
+// You may want to apply some transformations to the coordinate system
+for (var x = min; x < max; x = x + xstep) {
+    var y = HEIGHT/2 - (quad_a * x * x + quad_b*x + quad_c)
+    if (x == min) {
+         ctx.moveTo(x+parseFloat(WIDTH/2), y); // First point
+    } else {
+         ctx.lineTo(x+parseFloat(WIDTH/2), y); // Subsequent points
+    }
+}
+ctx.stroke();
+	}
+
+
+function draw_sin(){
+
+var min = parseFloat(-1)*WIDTH; // Minimum x
+var max = WIDTH; // Maximum x
+var xstep = 0.1; // How smooth the curve should be
+var trig_a = document.getElementById('trig_a').value
+var trig_b = document.getElementById('trig_b').value
+
+// ctx is the context object
+// You may want to apply some transformations to the coordinate system
+for (var x = min; x < max; x = x + xstep) {
+  var y = HEIGHT/2 - (trig_a*Math.sin(trig_b*x))
+  if (x == min) {
+       ctx.moveTo(x+parseFloat(WIDTH/2), y); // First point
+  } else {
+       ctx.lineTo(x+parseFloat(WIDTH/2), y); // Subsequent points
+  }
+}
+
+ctx.stroke();
+	}
+
+
+	function draw_cos(){
+
+	var min = parseFloat(-1)*WIDTH; // Minimum x
+	var max = WIDTH; // Maximum x
+	var xstep = 0.1; // How smooth the curve should be
+	var trig_a = document.getElementById('trig_a').value
+	var trig_b = document.getElementById('trig_b').value
+
+	// ctx is the context object
+	// You may want to apply some transformations to the coordinate system
+	for (var x = min; x < max; x = x + xstep) {
+	  var y = HEIGHT/2 - (trig_a*Math.cos(trig_b*x))
+	  if (x == min) {
+	       ctx.moveTo(x+parseFloat(WIDTH/2), y); // First point
+	  } else {
+	       ctx.lineTo(x+parseFloat(WIDTH/2), y); // Subsequent points
+	  }
+	}
+
+
+	ctx.stroke();
+		}
+
+function draw_tan(){
+
+		var min = parseFloat(-1)*WIDTH; // Minimum x
+		var max = WIDTH; // Maximum x
+		var xstep = 0.1; // How smooth the curve should be
+		var trig_a = document.getElementById('trig_a').value
+		var trig_b = document.getElementById('trig_b').value
+
+		// ctx is the context object
+		// You may want to apply some transformations to the coordinate system
+		for (var x = min; x < max; x = x + xstep) {
+		  var y = HEIGHT/2 - (trig_a*Math.tan(trig_b*x))
+		  if (x == min) {
+		       ctx.moveTo(x+parseFloat(WIDTH/2), y); // First point
+		  } else {
+		       ctx.lineTo(x+parseFloat(WIDTH/2), y); // Subsequent points
+		  }
+		}
+		ctx.stroke();
+			}
+
+	function draw_trigonometric(){
+		if (document.getElementById("three_dots").innerHTML == "sin"){
+			draw_sin()}
+		else if (document.getElementById("three_dots").innerHTML == "cos") {
+			draw_cos()}
+			else if (document.getElementById("three_dots").innerHTML == "tan") {
+				draw_tan()}
+	}

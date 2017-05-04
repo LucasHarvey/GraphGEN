@@ -1,0 +1,30 @@
+function calculate_adjusted_slope(){
+  var x_increments = parseFloat(document.getElementById('x_inc').value)
+  var y_increments = parseFloat(document.getElementById('y_inc').value)
+
+		x1=pts[0][0]
+		y1=pts[0][1]
+		x2=pts[1][0]
+		y2=pts[1][1]
+	deltay = y2 - y1
+	deltax = x2 - x1
+	slope = deltay/deltax
+	b = (y1-(slope * x1))
+  y_at_width = parseFloat(HEIGHT/2) - ((slope*x_increments * 25 + b) * (20/y_increments))
+  y_at_left = parseFloat(HEIGHT/2) - ((-1*slope*x_increments * 25 + b) * (20/y_increments))
+Line (0,y_at_left,WIDTH,y_at_width)
+if (b<0){
+alert("Equation: "+ "y = " + slope + "x " + " " + b);
+}
+else if (b==0){
+	if (slope == 1){
+	alert("Equation: y = x");}
+	else{
+		alert("Equation: "+ "y = " + slope + "x ")
+	}
+}
+else {
+	alert("Equation: "+ "y = " + slope + "x " + " + " + b);
+}
+
+}

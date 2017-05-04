@@ -1,0 +1,12 @@
+function draw_linear(){
+	eqslope = parseFloat(document.getElementById('slope').value);
+	eqintercept = parseFloat(document.getElementById('y-intercept').value);
+	left_intercept_adjusted = parseFloat(HEIGHT/2) - (-1*eqslope*parseFloat(document.getElementById("x_inc").value)*25 + eqintercept);
+	width_intercept_adjusted = parseFloat(HEIGHT/2) - (eqslope *parseFloat(document.getElementById("x_inc").value)*25 + eqintercept);
+	if (eqslope == 0){
+		Line(0,parseFloat(HEIGHT/2) - eqintercept,WIDTH,parseFloat(HEIGHT/2) - eqintercept)
+	}
+	else{
+	Line(0,left_intercept_adjusted,WIDTH,width_intercept_adjusted)
+}
+}
