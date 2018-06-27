@@ -1,5 +1,5 @@
-This is an application that allows users to: </br>
--plot points and plot the function</br>
--plot linear, quadratic or trigonometric functions</br>
--determine the best linear fit for scattered data</br>
--change the axes values to zoom in or out of the graph</br>
+This is a web-based mathematical graphing application that allows users to: </br>
+- Plot points and determine the equation relating them</br>
+- Plot linear, quadratic or trigonometric functions</br>
+- Determine the best linear fit for scattered data</br>
+- Change the values of the axes to zoom in or out of the graph</br>
